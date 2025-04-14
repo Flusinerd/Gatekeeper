@@ -1,0 +1,14 @@
+{
+  "framework": "react",
+  "projectName": "gatekeeper-ui",
+  "mode": "file-router",
+  "typescript": true,
+  "tailwind": false,
+  "packageManager": "npm",
+  "toolchain": "eslint+prettier",
+  "variableValues": {},
+  "git": true,
+  "version": 1,
+  "existingAddOns": []
+}
+

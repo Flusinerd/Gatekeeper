@@ -12,7 +12,7 @@ ROOT_DIR := $(shell git rev-parse --show-toplevel)
 # Run in development mode using air
 dev:
 	@echo "Starting $(SERVICE) in dev mode..."
-	@air
+	@air serve
 
 dev-frontend:
 	@echo "Starting frontend in dev mode..."

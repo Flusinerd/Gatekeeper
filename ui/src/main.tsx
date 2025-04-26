@@ -8,6 +8,11 @@ import { routeTree } from './routeTree.gen'
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 
+import PocketBase from 'pocketbase'
+
+const host = window.location.host
+const pb = new PocketBase(host)
+
 // Create a new router instance
 const router = createRouter({
   routeTree,

@@ -1,12 +1,45 @@
+import { AppSidebar } from '@/components/app-sidebar'
 import { ThemeProvider } from '@/components/theme-provider'
-import { Outlet, createRootRoute } from '@tanstack/react-router'
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+  BreadcrumbPage,
+} from '@/components/ui/breadcrumb'
+import { Separator } from '@/components/ui/separator'
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from '@/components/ui/sidebar'
+import type { QueryClient } from '@tanstack/react-query'
+import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import PocketBase from 'pocketbase'
 
-export const Route = createRootRoute({
+type RouterContext = {
+  pb: PocketBase
+  queryClient: QueryClient
+}
+
+export const Route = createRootRouteWithContext<RouterContext>()({
   component: () => (
     <ThemeProvider storageKey="gatekeeper-ui-theme">
-      <Outlet />
-      <TanStackRouterDevtools />
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+            <div className="flex items-center gap-2 px-4">
+              <SidebarTrigger className="-ml-1" />
+              <Separator orientation="vertical" className="mr-2 h-4!" />
+            </div>
+          </header>
+          <Outlet></Outlet>
+        </SidebarInset>
+      </SidebarProvider>
+      <TanStackRouterDevtools position="bottom-right" />
     </ThemeProvider>
   ),
 })

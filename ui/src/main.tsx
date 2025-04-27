@@ -1,42 +1,49 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
+import PocketBase from 'pocketbase'
+import { PocketbaseProvider } from './hooks/usePocketbase.tsx'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-// Import the generated route tree
 import { routeTree } from './routeTree.gen'
 
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 
-import PocketBase from 'pocketbase'
+// Pocketbase is proxied under /api
+const pocketbaseHost = window.location.origin
+const pb = new PocketBase(pocketbaseHost)
 
-const host = window.location.host
-const pb = new PocketBase(host)
+const queryClient = new QueryClient()
 
-// Create a new router instance
 const router = createRouter({
   routeTree,
-  context: {},
+  context: {
+    pb,
+    queryClient,
+  },
   defaultPreload: 'intent',
   scrollRestoration: true,
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
 })
 
-// Register the router instance for type safety
 declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router
   }
 }
 
-// Render the app
 const rootElement = document.getElementById('app')
 if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <PocketbaseProvider client={pb}>
+          <RouterProvider router={router} />
+        </PocketbaseProvider>
+      </QueryClientProvider>
     </StrictMode>,
   )
 }

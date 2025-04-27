@@ -9,11 +9,28 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useLoginMutation } from '@/api/login'
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
+  const loginMutation = useLoginMutation()
+
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
+    console.log(formData)
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
+
+    try {
+      await loginMutation.mutateAsync({ email, password })
+    } catch (error) {
+      console.error('Login failed', error)
+    }
+  }
+
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card>
@@ -24,12 +41,13 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleLogin}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="m@example.com"
                   autoComplete="email"
@@ -49,6 +67,7 @@ export function LoginForm({
                 <Input
                   id="password"
                   type="password"
+                  name="password"
                   required
                   autoComplete="current-password"
                 />

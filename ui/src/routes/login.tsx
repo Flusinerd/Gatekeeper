@@ -1,8 +1,14 @@
 import { LoginForm } from '@/components/login-form'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/login')({
   component: RouteComponent,
+  loader: ({ context }) => {
+    const { pb } = context
+    if (pb.authStore.isValid) {
+      return redirect({ to: '/' })
+    }
+  },
 })
 
 function RouteComponent() {

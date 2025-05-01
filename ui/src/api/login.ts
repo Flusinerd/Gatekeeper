@@ -1,25 +1,16 @@
 import { usePocketbase } from '@/hooks/usePocketbase'
 import { useMutation } from '@tanstack/react-query'
 import PocketBase from 'pocketbase'
-
-type PocketBaseUser = {
-  id: string
-  email: string
-  emailVisibility: boolean
-  verified: boolean
-  created: string
-  updated: string
-}
+import type { UsersRecord } from 'pocketbase-types'
 
 export async function login(
   email: string,
   password: string,
   pb: PocketBase,
-): Promise<PocketBaseUser | null> {
-  console.log(email, password)
+): Promise<UsersRecord | null> {
   try {
     const authData = await pb
-      .collection<PocketBaseUser>('users')
+      .collection<UsersRecord>('users')
       .authWithPassword(email, password)
     return authData.record
   } catch (error) {

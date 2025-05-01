@@ -1,7 +1,6 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
-import PocketBase from 'pocketbase'
 import { PocketbaseProvider } from './hooks/usePocketbase.tsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
@@ -10,10 +9,7 @@ import { routeTree } from './routeTree.gen'
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 import { AuthProvider } from './hooks/useAuth.tsx'
-
-// Pocketbase is proxied under /api
-const pocketbaseHost = window.location.origin
-const pb = new PocketBase(pocketbaseHost)
+import { pb } from '@/pocketbase-client.ts'
 
 const queryClient = new QueryClient()
 

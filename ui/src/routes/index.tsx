@@ -1,9 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router'
 import logo from '../logo.svg'
 import '../App.css'
+import { ProtectedRoute } from '@/components/ProtectedRoute'
+import { AppSidebarLayout } from '@/components/app-sidebar'
 
 export const Route = createFileRoute('/')({
-  component: App,
+  component: () => (
+    <ProtectedRoute>
+      <AppSidebarLayout>
+        <App />
+      </AppSidebarLayout>
+    </ProtectedRoute>
+  ),
 })
 
 function App() {

@@ -1,42 +1,25 @@
 package main
 
 import (
-	"context"
-	"log/slog"
+	"log"
 	"os"
-	"os/signal"
 
-	"eu.jan-krueger/gatekeeper/cmd/internal/config"
-	"eu.jan-krueger/gatekeeper/cmd/internal/web"
+	"github.com/pocketbase/pocketbase"
+	"github.com/pocketbase/pocketbase/apis"
+	"github.com/pocketbase/pocketbase/core"
 )
 
 func main() {
-	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
-	defer cancel()
+	app := pocketbase.New()
 
-	c, err := config.Load()
-	if err != nil {
-		panic(err)
-	}
+	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
+		// serves static files from the provided public dir (if exists)
+		se.Router.GET("/{path...}", apis.Static(os.DirFS("./pb_public"), false))
 
-	httpServer := web.NewHttpServer(ctx, c)
+		return se.Next()
+	})
 
-	srvErr := make(chan error)
-	go func() {
-		err := httpServer.Listen()
-		if err != nil {
-			srvErr <- err
-		}
-	}()
-
-	select {
-	case err = <-srvErr:
-		slog.Error("HTTP Server error", err)
-	case <-ctx.Done():
-		slog.Info("Shutting down HTTP Server")
-		err = httpServer.Shutdown(ctx)
-		if err != nil {
-			slog.Error("HTTP Server shutdown error", err)
-		}
+	if err := app.Start(); err != nil {
+		log.Fatal(err)
 	}
 }

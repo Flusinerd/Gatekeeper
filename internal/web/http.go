@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"eu.jan-krueger/gatekeeper/cmd/internal/config"
+	"eu.jan-krueger/gatekeeper/internal/config"
 	sloghttp "github.com/samber/slog-http"
 )
 

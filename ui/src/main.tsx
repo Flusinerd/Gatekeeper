@@ -9,6 +9,7 @@ import { routeTree } from './routeTree.gen'
 
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
+import { AuthProvider } from './hooks/useAuth.tsx'
 
 // Pocketbase is proxied under /api
 const pocketbaseHost = window.location.origin
@@ -41,7 +42,9 @@ if (rootElement && !rootElement.innerHTML) {
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <PocketbaseProvider client={pb}>
-          <RouterProvider router={router} />
+          <AuthProvider>
+            <RouterProvider router={router} />
+          </AuthProvider>
         </PocketbaseProvider>
       </QueryClientProvider>
     </StrictMode>,
